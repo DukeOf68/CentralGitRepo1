@@ -1,0 +1,282 @@
+﻿@using DaisyMvc.Models
+@{
+    ViewBag.Title = "DragDropFilePost";
+}
+
+<div class="jumbotron jumboStyle1 bgImgLibrary1", style="background-size: cover">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>@*Drag & Drop file upload*@ </h2>
+            <div id="dropArea" class="jumbotron seeThruBg">
+                <span id="dropText">Drop File(s) Here Please..</span>
+            </div>
+            <h4>Uploaded files : </h4>
+            <ul class="list-group" id="uploadList"></ul>
+
+        </div>
+        <div id="upload2" class="col-md-6">
+            @*<h2>Basic File Upload</h2>*@
+
+            <div id="VideoDiv">
+                <label style="color:purple">Or, browse to find a file to post....</label>
+                <span style="color:fuchsia">
+                    <input type="file" id="fileInput" style="font-size: medium"> 
+                </span><br/>   
+                <input type="button" id="btnUpload" value="Add" class="btn-block seeThruBg" style="border: solid 2px fuchsia;" />
+            </div>
+
+            @*<span class="btn btn-block btn-primary">
+                            Find a file <input  type="file" id="fileInput"  />
+                        </span>
+                        @*<input type="file" id="fileInput" style="background-color: fuchsia; font-size: 16px" /><br /><br />
+                                    <input type="button" id="btnUpload" value="Add a file.." class="seeThruBtn" /><br /><br />
+
+                </div>
+
+
+                @using (Html.BeginForm("UploadFiles2",
+                                "Video",
+                                FormMethod.Post,
+                                new { enctype = "multipart/form-data", @class = "seeThruBg" }))
+                    {
+                        <label for="file">Add a file...</label>
+                        <input type="file" name="file" id="upload-file" /><br><br>
+                        <input type="submit" id="btnUpload" value="Add now" class="seeThruBtn" />
+
+
+                    }*@
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div id="progressbar_container" style="width: 50%; height: 5px; position: relative; background-color: red; display: none">
+                <div id="progressbar" style="width: 0%; height: 100%; position: absolute; background-color: greenyellow"></div>
+                @*<span id="progressbar_label" style="position: absolute; left: 35%; top: 20%">Sending...</span>*@
+                <span id="progressbar_label" style="color: greenyellow">Sending...</span>
+            </div>
+            @*<div class="col-md-offset-3 col-md-6">
+
+                    <span class="btn btn-default btn-file">
+                        MyText <input type="file">
+                    </span>
+                </div>*@
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    #dropText {
+        color: purple;
+        font-size: 30px;
+    }
+
+    #releaseText {
+        color: blueviolet;
+        font-size: 20px;
+    }
+
+    #dropArea {
+        /*background:#b5b5b5;*/
+        /*border:black dashed 1px;*/
+        height: 250px;
+        width: 450px;
+        text-align: center;
+        /*color:#fff;*/
+        padding-top: 12px;
+        /*background-color: yellow;*/
+        color: yellow;
+        border-style: solid;
+        border-width: medium;
+        border-color: purple;
+    }
+
+    .active-drop {
+        /*background: greenyellow !important;*/
+        border: solid 7px white !important;
+        opacity: .5;
+        color: black !important;
+    }
+
+    .inactive-drop {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('../../Content/Images/spongebob1.jpg');
+    }
+</style>
+
+@section Scripts{
+
+
+    <script src="~/Scripts/jquery.filedrop.js"></script>
+
+    <script type="text/javascript">
+
+        $(document)
+            .ready(function() {
+
+                var progressBarStart = function() {
+                    $("#progressbar_container").show();
+                }
+
+                var progressBarUpdate = function(percentage) {
+                    $('#progressbar_label').html(percentage + "%");
+                    $("#progressbar").width(percentage + "%");
+                }
+
+                var progressBarComplete = function() {
+                    $("#progressbar_container").fadeOut(500);
+                }
+
+                var file;
+
+                $('#fileInput')
+                    .change(function(e) {
+                        file = e.target.files[0];
+                    });
+
+                var uploadCompleted = function() {
+                    var formData = new FormData();
+                    formData.append('fileName', file.name);
+                    formData.append('completed', true);
+
+                    var xhr2 = new XMLHttpRequest();
+                    xhr2.onload = function() {
+                        progressBarUpdate(100);
+                        progressBarComplete();
+                    }
+                    xhr2.open("POST", "/Video/UploadComplete?fileName=" + file.name + "&complete=" + 1, true);
+                    xhr2.send(formData);
+                }
+
+
+                var multiUpload = function(count, counter, blob, completed, start, end, bytesPerChunk) {
+
+                    //var debug = "count:" +
+                    //    count +
+                    //    " counter:" +
+                    //    counter +
+                    //    " blobsize:" +
+                    //    blob.size +
+                    //    " start:" +
+                    //    start +
+                    //    " end:" +
+                    //    end +
+                    //    " completed:"+completed;
+                    //alert(debug);
+                    counter = counter + 1;
+                    if (counter <= count) {
+                        var chunk = blob.slice(start, end);
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function() {
+                            start = end;
+                            end = start + bytesPerChunk;
+                            if (count == counter) {
+                                uploadCompleted();
+                            } else {
+                                var percentage = (counter / count) * 100;
+                                progressBarUpdate(percentage);
+                                //alert("onload:"+counter);
+                                multiUpload(count, counter, blob, completed, start, end, bytesPerChunk);
+                            }
+                        }
+                        xhr
+                            .open("POST",
+                                "/Video/MultiUpload?id=" + counter.toString() + "&fileName=" + file.name,
+                                true);
+                        xhr.send(chunk);
+                        //alert("sent a chunk");
+                    }
+                }
+          
+            
+
+        @*$("#btnUpload")
+                .click(function (evt) {
+                    //evt.preventDefault();
+                    ////alert(evt.target.href + "&forceContextSearch=" + $("#forceContextSearch").val());
+                    //location.href = evt.target.href + "&forceContextSearch=" + $("#forceContextSearch").val();
+
+                    var blob = file;
+                    var bytesPerChunk = @AppValues.FileChunkSz;
+                    var size = blob.size;
+
+                    //var start = 0;
+                    //var end = bytesPerChunk;
+                    //var completed = 0;
+                    //var count = size % bytesPerChunk == 0 ? size / bytesPerChunk : Math.floor(size / bytesPerChunk) + 1;
+                    //var counter = 0;
+                    ////progressBarStart();
+
+                    //multiUpload(count, counter, blob, completed, start, end, bytesPerChunk);
+
+
+
+
+                });*@
+
+
+        $("#VideoDiv")
+            .on("click",
+                "#btnUpload",
+                function() {
+                    var blob = file;
+                    var bytesPerChunk = @AppValues.FileChunkSz;
+                    var size = blob.size;
+
+                    var start = 0;
+                    var end = bytesPerChunk;
+                    var completed = 0;
+                    var count = size % bytesPerChunk == 0
+                        ? size / bytesPerChunk
+                        : Math.floor(size / bytesPerChunk) + 1;
+                    var counter = 0;
+                    progressBarStart();
+                    multiUpload(count, counter, blob, completed, start, end, bytesPerChunk);
+
+                });
+
+
+      
+
+        $(function() {
+            $('#dropArea')
+                .filedrop({
+                    url: '@Url.Action("UploadFiles")',
+                    //allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+                    //allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+                    paramname: 'files',
+                    maxfiles: 5,
+                    maxfilesize: 30, // in MB
+                    dragOver: function() {
+                        $('#dropArea').addClass('active-drop bgImgLetItGo');
+                        //$('#dropArea').addClass('active-drop');
+                        //$('#dropText').html("<span style=\"color: fuchsia\" Let it go.... Let it go...></span>");
+                        $('#dropText').html("<span style=\"color: white; \">Let it go.... ,  Let it go...</span>");
+                    },
+                    dragEnter: function() {
+                        $('#dropText').html("Drop File(s) Here Please..");
+                        //this is useful to reset the AfterAll message if user comes back into dropzone
+                    },
+                    dragLeave: function() {
+                        $('#dropArea').removeClass('active-drop bgImgLetItGo');
+                        $('#dropText').html("Drop File(s) Here Please..");
+                    },
+                    drop: function() {
+                        $('#dropArea').removeClass('active-drop bgImgLetItGo');
+                        //$('#dropText').html("DROP TRIGGERED");
+                    },
+                    afterAll: function(e) {
+                        $('#dropText').html('file(s) uploaded successfully');
+                    },
+                    uploadFinished: function(i, file, response, time) {
+                        $('#uploadList').append('<li class="list-group-item">' + file.name + '</li>');
+                    }
+                });
+        });
+            });
+    </script>
+    }
+
+

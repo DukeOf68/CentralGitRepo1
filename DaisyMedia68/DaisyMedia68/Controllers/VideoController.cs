@@ -44,17 +44,17 @@ namespace DaisyMvc.Controllers
         public ActionResult Videos()
         {
 
-            //var results = Directory.GetFiles(DIRPATH);
+            var results = Directory.GetFiles(DIRPATH);
 
             var vvm = new VideosVm();
             vvm.Videos = new List<VideoFile>();
 
-            //int ctr = 0;
-            //foreach (var result in results)
-            //{
-            //    VideoFile v = new VideoFile() { Id = ++ctr, Title = Path.GetFileName(result) };
-            //    vvm.Videos.Add(v);
-            //}
+            int ctr = 0;
+            foreach (var result in results)
+            {
+                VideoFile v = new VideoFile() { Id = ++ctr, Title = Path.GetFileName(result) };
+                vvm.Videos.Add(v);
+            }
 
             //return Content("You reached the Video/Videos Action Controller");
             return View(vvm);

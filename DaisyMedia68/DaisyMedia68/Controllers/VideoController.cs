@@ -46,8 +46,8 @@ namespace DaisyMvc.Controllers
 
             //var results = Directory.GetFiles(DIRPATH);
 
-            //var vvm = new VideosVm();
-            //vvm.Videos = new List<VideoFile>();
+            var vvm = new VideosVm();
+            vvm.Videos = new List<VideoFile>();
 
             //int ctr = 0;
             //foreach (var result in results)
@@ -56,8 +56,8 @@ namespace DaisyMvc.Controllers
             //    vvm.Videos.Add(v);
             //}
 
-            return Content("You reached the Video/Videos Action Controller");
-            //return View(vvm);
+            //return Content("You reached the Video/Videos Action Controller");
+            return View(vvm);
         }
 
 

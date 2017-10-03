@@ -40,7 +40,7 @@ namespace DaisyMvc.Controllers
 
 
         //GET
-       // [Authorize]
+        [Authorize]
         public ActionResult Videos()
         {
 

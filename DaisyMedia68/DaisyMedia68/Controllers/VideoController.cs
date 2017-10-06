@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,9 @@ using System.Web;
 using System.Web.Mvc;
 using DaisyMvc.Models;
 using DaisyMvc.Models.ViewModels;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json;
 
 namespace DaisyMvc.Controllers
@@ -69,6 +73,60 @@ namespace DaisyMvc.Controllers
         [HttpPost]
         public string MultiUpload(string id, string fileName)
         {
+            // If writing files to file system, use WriteChunksToTempFolder and MergeTempFolderChunks (call from UploadComplete)
+
+                WriteChunksToTempFolder(id, fileName);
+
+
+           // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
+            //WriteStreamToBlobInBytes(id, fileName);
+
+
+            return "done";
+        }
+
+       
+
+        [HttpPost]
+        public string UploadComplete(string fileName, string complete)
+        {
+            //MergeTempFolderChunks(fileName, complete);
+            return "success";
+        }
+
+
+
+
+        private void WriteStreamToBlobInBytes(string id, string fileName)
+        {
+
+            TimeSpan backOffPeriod = TimeSpan.FromSeconds(2);
+            int retryCount = 1;
+            BlobRequestOptions bro = new BlobRequestOptions()
+            {
+                SingleBlobUploadThresholdInBytes = 1024 * 1024, //1MB, the minimum
+                ParallelOperationThreadCount = 1,
+                RetryPolicy = new ExponentialRetry(backOffPeriod, retryCount),
+            };
+
+            string blobConnection = ConfigurationManager.AppSettings["StorageDefaultConnectionString"];
+            string containerName = "daisy01";  //ConfigurationManager.AppSettings["StorageDefaultConnectionString"];
+
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobConnection);
+            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+            cloudBlobClient.DefaultRequestOptions = bro;
+
+            var cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
+
+            //the blob will be named the same as the filename being uploaded
+            CloudBlockBlob blob = cloudBlobContainer.GetBlockBlobReference(Path.GetFileName(fileName));
+            blob.StreamWriteSizeInBytes = 256 * 1024; //256 k
+            blob.UploadFromFile(fileName);
+        }
+
+
+        private void WriteChunksToTempFolder(string id, string fileName)
+        {
             var chunkNumber = id;
             var chunks = Request.InputStream;
             string path = Server.MapPath(uploadedFilesPath + "/Temp");
@@ -82,25 +140,26 @@ namespace DaisyMvc.Controllers
                     fs.Write(bytes, 0, bytesRead);
                 }
             }
-            return "done";
         }
 
-        [HttpPost]
-        public string UploadComplete(string fileName, string complete)
+        private void MergeTempFolderChunks(string fileName, string complete)
         {
             string tempPath = Server.MapPath(uploadedFilesPath + "/Temp");
             string videoPath = Server.MapPath(uploadedFilesPath);
             string newPath = Path.Combine(tempPath, fileName);
             if (complete == "1")
             {
-                string[] filePaths = Directory.GetFiles(tempPath).Where(p => p.Contains(fileName)).OrderBy(p => Int32.Parse(p.Replace(fileName, "$").Split('$')[1])).ToArray();
+                string[] filePaths =
+                    Directory.GetFiles(tempPath)
+                        .Where(p => p.Contains(fileName))
+                        .OrderBy(p => Int32.Parse(p.Replace(fileName, "$").Split('$')[1]))
+                        .ToArray();
                 foreach (string filePath in filePaths)
                 {
                     MergeFiles(newPath, filePath);
                 }
             }
             System.IO.File.Move(Path.Combine(tempPath, fileName), Path.Combine(videoPath, fileName));
-            return "success";
         }
 
         private static void MergeFiles(string file1, string file2)

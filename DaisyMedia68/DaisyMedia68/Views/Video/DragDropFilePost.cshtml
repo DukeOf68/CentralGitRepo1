@@ -3,7 +3,7 @@
     ViewBag.Title = "DragDropFilePost";
 }
 
-<div class="jumbotron jumboStyle1 bgImgLibrary1", style="background-size: cover">
+<div class="jumbotron jumboStyle1 bgImgLibrary1" , style="background-size: cover">
     <div class="row">
         <div class="col-md-6">
             <h2>@*Drag & Drop file upload*@ </h2>
@@ -20,8 +20,8 @@
             <div id="VideoDiv">
                 <label style="color:purple">Or, browse to find a file to post....</label>
                 <span style="color:fuchsia">
-                    <input type="file" id="fileInput" style="font-size: medium"> 
-                </span><br/>   
+                    <input type="file" id="fileInput" style="font-size: medium">
+                </span><br />
                 <input type="button" id="btnUpload" value="Add" class="btn-block seeThruBg" style="border: solid 2px fuchsia;" />
             </div>
 
@@ -150,6 +150,23 @@
                     xhr2.send(formData);
                 }
 
+                var uploadFiles = function() {
+
+                    var blob = file;
+                    var bytesPerChunk = @AppValues.FileChunkSz;
+                    var size = blob.size;
+
+                    var start = 0;
+                    var end = bytesPerChunk;
+                    var completed = 0;
+                    var count = size % bytesPerChunk == 0
+                        ? size / bytesPerChunk
+                        : Math.floor(size / bytesPerChunk) + 1;
+                    var counter = 0;
+                    progressBarStart();
+                    multiUpload(count, counter, blob, completed, start, end, bytesPerChunk);
+
+                }
 
                 var multiUpload = function(count, counter, blob, completed, start, end, bytesPerChunk) {
 
@@ -189,8 +206,8 @@
                         //alert("sent a chunk");
                     }
                 }
-          
-            
+
+
 
         @*$("#btnUpload")
                 .click(function (evt) {
@@ -220,25 +237,15 @@
         $("#VideoDiv")
             .on("click",
                 "#btnUpload",
-                function() {
-                    var blob = file;
-                    var bytesPerChunk = @AppValues.FileChunkSz;
-                    var size = blob.size;
+                function () {
 
-                    var start = 0;
-                    var end = bytesPerChunk;
-                    var completed = 0;
-                    var count = size % bytesPerChunk == 0
-                        ? size / bytesPerChunk
-                        : Math.floor(size / bytesPerChunk) + 1;
-                    var counter = 0;
-                    progressBarStart();
-                    multiUpload(count, counter, blob, completed, start, end, bytesPerChunk);
+                    uploadFiles();
 
-                });
+                }
+            );
 
 
-      
+
 
         $(function() {
             $('#dropArea')
@@ -274,9 +281,9 @@
                         $('#uploadList').append('<li class="list-group-item">' + file.name + '</li>');
                     }
                 });
-        });
-            });
+             });
+         });
     </script>
-    }
+}
 
 

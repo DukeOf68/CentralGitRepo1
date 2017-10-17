@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DaisyMedia68.Business;
 using DaisyMvc.Models;
 using DaisyMvc.Models.ViewModels;
 using Microsoft.WindowsAzure.Storage;
@@ -75,11 +76,11 @@ namespace DaisyMvc.Controllers
         {
             // If writing files to file system, use WriteChunksToTempFolder and MergeTempFolderChunks (call from UploadComplete)
 
-                WriteChunksToTempFolder(id, fileName);
+            //WriteChunksToTempFolder(id, fileName);
 
 
-           // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
-            //WriteStreamToBlobInBytes(id, fileName);
+            // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
+            WriteStreamToBlobInBytes(id, fileName);
 
 
             return "done";
@@ -99,29 +100,11 @@ namespace DaisyMvc.Controllers
 
         private void WriteStreamToBlobInBytes(string id, string fileName)
         {
+            // id   - needed ?
 
-            TimeSpan backOffPeriod = TimeSpan.FromSeconds(2);
-            int retryCount = 1;
-            BlobRequestOptions bro = new BlobRequestOptions()
-            {
-                SingleBlobUploadThresholdInBytes = 1024 * 1024, //1MB, the minimum
-                ParallelOperationThreadCount = 1,
-                RetryPolicy = new ExponentialRetry(backOffPeriod, retryCount),
-            };
+            AzureBlobStorageHandler absh = new AzureBlobStorageHandler();
 
-            string blobConnection = ConfigurationManager.AppSettings["StorageDefaultConnectionString"];
-            string containerName = "daisy01";  //ConfigurationManager.AppSettings["StorageDefaultConnectionString"];
-
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(blobConnection);
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            cloudBlobClient.DefaultRequestOptions = bro;
-
-            var cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
-
-            //the blob will be named the same as the filename being uploaded
-            CloudBlockBlob blob = cloudBlobContainer.GetBlockBlobReference(Path.GetFileName(fileName));
-            blob.StreamWriteSizeInBytes = 256 * 1024; //256 k
-            blob.UploadFromFile(fileName);
+           absh.UploadToBlobFromFile(fileName);
         }
 
 

@@ -76,12 +76,12 @@ namespace DaisyMvc.Controllers
         {
             // If writing files to file system, use WriteChunksToTempFolder and MergeTempFolderChunks (call from UploadComplete)
 
-            //WriteChunksToTempFolder(id, fileName);
 
+            //currently saving to file system 
+            WriteChunksToTempFolder(id, fileName);
 
             // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
-            WriteStreamToBlobInBytes(id, fileName);
-
+            //WriteStreamToBlobInBytes(id, fileName);
 
             return "done";
         }

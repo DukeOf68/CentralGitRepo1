@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using DaisyMvc.Models
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Home Page";
 }
@@ -8,7 +9,7 @@
     <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
 
 
-<div class="jumbotron jumboStyle1 bgImgDaisyParrot1" style="background-size: cover; padding: 10px">
+<div class="jumbotron jumboStyle1 bgImgDaisyParrot1" style="background-size: cover; padding: 10px; ">
     <div class="row">
         <div class="col-sm-1">
             @{ var userText = Request.IsAuthenticated ? " " + User.Identity.GetUserName() : ", please log in"; }
@@ -22,27 +23,32 @@
                 @Html.ActionLink("Enter", "Videos", "Video", null, new { @class = "btn btn-primary btn-block", style = "background-color: pink; color:black; font-size: large" })
 
                 @*if (Request.IsAuthenticated)
-                {
-                    @Html.ActionLink("Enter", "Videos", "Video", null, new { @class = "btn btn-primary btn-block", style = "background-color: pink; color:black; font-size: large" })
-                }
-                else
-                {
-                    @Html.ActionLink("Login", "Login", "Account", new { id = "loginLink" }, new { @class = "btn btn-primary btn-block", style = "background-color: pink; color:black; font-size: large" })
-                }*@
+                    {
+                        @Html.ActionLink("Enter", "Videos", "Video", null, new { @class = "btn btn-primary btn-block", style = "background-color: pink; color:black; font-size: large" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Login", "Login", "Account", new { id = "loginLink" }, new { @class = "btn btn-primary btn-block", style = "background-color: pink; color:black; font-size: large" })
+                    }*@
             }
         </div>
 
         @{
-            <div class="col-sm-offset-8 col-sm-2 pull-right">
+            <div id="registerDiv" class="col-sm-offset-8 col-sm-2 pull-right">
+
 
                 @if (!Request.IsAuthenticated)
                 {
-                    @Html.ActionLink("Register", "Register", "Account", new { id = "registerLink" }, new { @class = "seeThruBtn" })
+                    <div id="registerOnOff" style="display: none">
+                        @Html.ActionLink("Register", "Register", "Account", new { id = "registerLink" }, new { @class = "btn" })
+                        @*@Html.ActionLink("Register", "Register", "Account", new { id = "registerLink" }, new { @class = "btn"  })*@
+                    </div>
                 }
                 else
                 {
-                    <span style="color: turquoise; font-size: small">Current User :</span><span style="color: Fuchsia;  font-size: small">@userText</span>
+                    <span style="color: turquoise; font-size: small">Current User :</span><span style="color: Fuchsia; font-size: small">@userText</span>
                 }
+
 
             </div>
 
@@ -89,3 +95,65 @@
             <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
         </div>
     </div> *@
+
+
+
+<style>
+    /*#registerDiv {
+        visibility: hidden;
+    }*/
+
+    /*.classNameHere {
+        border: solid 7px white !important;
+        opacity: .5;
+        color: black !important;
+    }*/
+</style>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        $(document)
+            .ready(function () {
+
+
+                var showRegister = function () {
+                    $("#registerOnOff").show();
+                }
+                var hideRegister = function () {
+                    $("#registerOnOff").hide();
+                }
+
+                //events
+                //$('#registerDiv').show();
+
+                $("#registerDiv").hover(function () {
+                    showRegister();
+                    //alert("You entered p1!");
+                },
+                    function () {
+                        hideRegister();
+                    }
+                );
+                //
+                //function(){
+                //    alert("Bye! You now leave p1!");
+                //}
+                //);
+
+                //$('#registerDiv')
+                //    .hover(function () {
+                //        $("#registerDiv").show();
+                //    });
+
+                //$("#VideoDiv")
+                //    .on("click",
+                //    "#btnUpload",
+                //    function () {
+
+                //        //uploadFiles();
+                //    });
+            });
+    </script>
+}

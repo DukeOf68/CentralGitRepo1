@@ -61,10 +61,12 @@ textarea {
 }
     */
 
-    .seeThruBtn:hover {
-        font-size: 22px;
-        /*background-color: deepskyblue;*/
-    }
+
+
+.seeThruBtn:hover {
+    font-size: 22px;
+    /*background-color: deepskyblue;*/
+}
 
 .jumboStyle1 {
     /*background-size: cover;*/

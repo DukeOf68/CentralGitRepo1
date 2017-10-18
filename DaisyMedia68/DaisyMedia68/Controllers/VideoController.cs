@@ -91,7 +91,7 @@ namespace DaisyMvc.Controllers
         [HttpPost]
         public string UploadComplete(string fileName, string complete)
         {
-            //MergeTempFolderChunks(fileName, complete);
+            MergeTempFolderChunks(fileName, complete);
             return "success";
         }
 

@@ -36,12 +36,26 @@ textarea {
     max-width: 280px;
 }
 
+.WarningBtn {
+
+    /* some common stuff here needs putting in common button, e.g. myBtn. then use 'myBtn WarningBtn' for example  */
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 0;
+    background-color: red;
+    border: solid 2px fuchsia;
+    border-radius: 90px;
+    /*opacity: .5;*/
+    color: black;
+    /*background-image: linear-gradient(rgba(255,255,255,0.7),rgba(255,255,255,0.7)),  url('../../Content/Images/LetItGo.jpg');*/
+}
+
 .fuchsiaBtn {
     padding: 10px 16px;
     font-size: 18px;
-    line-height: 1.33;
+    line-height: 0;
     background-color: fuchsia;
-    border: solid 2px fuchsia;
+    border: solid 2px red;
     border-radius: 90px;
     /*opacity: .5;*/
     color: black;

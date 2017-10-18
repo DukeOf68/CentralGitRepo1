@@ -86,7 +86,7 @@ namespace DaisyMvc.Controllers
             return "done";
         }
 
-       
+
 
         [HttpPost]
         public string UploadComplete(string fileName, string complete)
@@ -104,7 +104,7 @@ namespace DaisyMvc.Controllers
 
             AzureBlobStorageHandler absh = new AzureBlobStorageHandler();
 
-           absh.UploadToBlobFromFile(fileName);
+            absh.UploadToBlobFromFile(fileName);
         }
 
 
@@ -188,9 +188,19 @@ namespace DaisyMvc.Controllers
         public ActionResult UploadFiles(IEnumerable<HttpPostedFileBase> files)
         {
             SaveFiles(files);
-            //todo not sure where to go from here at the moment....
-            return Content("file uploaded successfully");
+
+            return RedirectToAction("Videos");
         }
+
+        //}
+        public ActionResult DeleteFile(string filename)
+        {
+            string fullSavePath = DIRPATH + filename;
+            System.IO.File.Delete(fullSavePath);
+
+            return RedirectToAction("Videos");
+        }
+
 
         private void SaveFiles(IEnumerable<HttpPostedFileBase> files)
         {
@@ -621,8 +631,13 @@ namespace DaisyMvc.Controllers
         //    task.Wait();
 
         //    return aFilm;
-        //}
-    }
+      
+
+        #region "private methods"
+       
+        #endregion
+
+        }
 
     ////// GET: Video/Details/5
     ////public ActionResult Details(int id)

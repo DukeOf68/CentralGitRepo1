@@ -14,20 +14,23 @@
         @foreach (var item in Model.Videos)
         {
             <tr>
-                <td class="col-md-8" style="color: black">
+                <td class="col-md-9" style="color: black">
                     @item.Title
                 </td>
 
 
-                <td class="col-md-3 pull-right">
+                <td class="col-md-3">
                     @{             
                         var hh = AppValues.MvcUri + "/Content/UploadedFiles/" + @item.Title;
                         //var hh = AppValues.MvcUriLh + "/Content/UploadedFiles/" + @item.Title;
                     }
 
-                    <a href="@hh" id="fileLink" class="fuchsiaBtn">Open</a>
+                    <a href="@hh" id="fileLink" class="fuchsiaBtn">Open</a>      
+
+                    @*<a href="@hh" id="delFile" class="fuchsiaBtn">Delete</a>*@  
+
                     @*@Html.ActionLink("Open", "Open", "Video", null, new {@class = "btn btn-md", style = "background-color:fuchsia; color:black"})*@
-                    @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                    @Html.ActionLink("Delete","DeleteFile", "Video", new {filename=@item.Title}, new {  @class = "WarningBtn"  }) 
                     @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
                 </td>
 

@@ -230,7 +230,7 @@
     <Content Include="Content\Images\MRT_0153.JPG" />
     <Content Include="Content\Images\spongebob1.jpg" />
     <Content Include="Content\UploadedFiles\Temp\TestFile2.txt" />
-    <Content Include="Content\UploadedFiles\TestFile1.txt" />
+    <Content Include="Content\UploadedFiles\TestFile11.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

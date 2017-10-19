@@ -209,9 +209,9 @@
                                 "/Video/MultiUpload?id=" + counter.toString() + "&fileName=" + file.name,
                                 true);
                         xhr.send(chunk);
-                        //alert("sent a chunk");
+                     
                     }
-                }
+                }                                                                              
 
 
 
@@ -291,6 +291,7 @@
              });
          });
     </script>
-}
+} 
+@Html.Raw(TempData["1"])
 
 

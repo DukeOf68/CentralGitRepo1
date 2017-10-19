@@ -4,6 +4,8 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Xml.Schema;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -32,9 +34,13 @@ namespace DaisyMedia68.Business
         private readonly TimeSpan _backOffPeriod = TimeSpan.FromSeconds(2);
         private const int RetryCount = 1;
 
+        public TempDataDictionary DebugInfo { get; } = new TempDataDictionary();
+
         public AzureBlobStorageHandler()
         {
             string blobConnection = ConfigurationManager.AppSettings["StorageDefaultConnectionString"];
+
+            DebugInfo.Add("1", "<script>alert(' blobConnection : "+ blobConnection + "');</script>");
 
             //_storageAccount = new CloudStorageAccount(_storageCredentials, false);
             _storageAccount = CloudStorageAccount.Parse(blobConnection);

@@ -51,6 +51,9 @@ namespace DaisyMvc.Controllers
 
             var results = Directory.GetFiles(DIRPATH);
 
+            //debug
+            TempData["getFileResults"] = "<script>alert(' file count: "+ results.Length +" ');</script>";
+
             var vvm = new VideosVm();
             vvm.Videos = new List<VideoFile>();
 
@@ -81,7 +84,9 @@ namespace DaisyMvc.Controllers
             //WriteChunksToTempFolder(id, fileName);
 
             // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
-            WriteStreamToBlobInBytes(id, fileName);
+            AzureBlobStorageHandler absh =  WriteStreamToBlobInBytes(id, fileName);
+
+            TempData = absh.DebugInfo;
 
             return "done";
         }
@@ -98,13 +103,16 @@ namespace DaisyMvc.Controllers
 
 
 
-        private void WriteStreamToBlobInBytes(string id, string fileName)
+        private AzureBlobStorageHandler WriteStreamToBlobInBytes(string id, string fileName)
         {
             // id   - needed ?
 
             AzureBlobStorageHandler absh = new AzureBlobStorageHandler();
 
             absh.UploadToBlobFromFile(fileName);
+
+            return absh;
+
         }
 
 

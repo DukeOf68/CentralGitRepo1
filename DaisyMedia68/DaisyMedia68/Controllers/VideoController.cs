@@ -81,7 +81,7 @@ namespace DaisyMvc.Controllers
 
 
             //currently saving to file system   - this needs the MergeTemp... call in UploadComplete method
-            //WriteChunksToTempFolder(id, fileName);
+            WriteChunksToTempFolder(id, fileName);
 
             // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
             AzureBlobStorageHandler absh =  WriteStreamToBlobInBytes(id, fileName);
@@ -96,7 +96,7 @@ namespace DaisyMvc.Controllers
         [HttpPost]
         public string UploadComplete(string fileName, string complete)
         {
-            //MergeTempFolderChunks(fileName, complete);
+            MergeTempFolderChunks(fileName, complete);
             return "success";
         }
 

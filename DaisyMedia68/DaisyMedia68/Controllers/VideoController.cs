@@ -75,7 +75,7 @@ namespace DaisyMvc.Controllers
         private string uploadedFilesPath = "~/Content/UploadedFiles";
 
         [HttpPost]
-        public string MultiUpload(string id, string fileName)
+        public ContentResult MultiUpload(string id, string fileName)
         {
             // If writing files to file system, use WriteChunksToTempFolder and MergeTempFolderChunks (call from UploadComplete)
 
@@ -88,7 +88,10 @@ namespace DaisyMvc.Controllers
 
             TempData = absh.DebugInfo;
 
-            return "done";
+            string msg = TempData["1"].ToString() + " : " + TempData["2"].ToString();
+
+            return Content(msg);
+            //return "done";
         }
 
 

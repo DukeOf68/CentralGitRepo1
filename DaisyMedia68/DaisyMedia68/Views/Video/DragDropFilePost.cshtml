@@ -73,8 +73,8 @@
     </div>
 
 </div>  
-@Html.Raw(TempData["1"])
-@Html.Raw(TempData["2"])
+@*@Html.Raw(TempData["1"])
+@Html.Raw(TempData["2"])*@
 
 
 <style>
@@ -249,7 +249,7 @@
                 function () {
 
                     uploadFiles();
-                    window.location.href = "/Video/Create";  // trying to refresh current view , in order to see the TempData content.....?!?
+                    //window.location.href = "/Video/Create";  // trying to refresh current view , in order to see the TempData content.....?!?
 
                 }
             );

@@ -56,7 +56,7 @@ namespace DaisyMedia68.Business
             _blobClient.DefaultRequestOptions = bro;
 
             _container = _blobClient.GetContainerReference(ROOT_CONTAINER_NAME);
-
+            DebugInfo.Add("2", "<script>alert(' containerName : " + _container.Name + "');</script>");
         }
 
         //public byte[] GetBlob(string containerName, string blobName)
@@ -119,6 +119,8 @@ namespace DaisyMedia68.Business
             return ExecuteWithExceptionHandlingAndReturnValue(
                 () =>
                 {
+                    _blockBlob = _container.GetBlockBlobReference(filename);
+
                     _blockBlob.StreamWriteSizeInBytes = 256 * 1024; //256 k
                     _blockBlob.UploadFromFile(filename);
                 });

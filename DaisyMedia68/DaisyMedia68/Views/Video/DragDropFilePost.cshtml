@@ -72,7 +72,10 @@
         </div>
     </div>
 
-</div>
+</div>  
+@Html.Raw(TempData["1"])
+@Html.Raw(TempData["2"])
+
 
 <style>
     #dropText {
@@ -246,7 +249,7 @@
                 function () {
 
                     uploadFiles();
-                    window.location.href = "/Video/Videos";
+                    //window.location.href = "/Video/Videos";
 
                 }
             );
@@ -292,6 +295,5 @@
          });
     </script>
 } 
-@Html.Raw(TempData["1"])
 
 

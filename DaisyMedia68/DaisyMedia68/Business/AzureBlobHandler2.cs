@@ -16,7 +16,7 @@ namespace DaisyMedia68.Business
     public class AzureBlobHandler2
     {
 
-        public void UploadFileToBlobStorage(string filename)
+        public void UploadFileToBlobStorage(string filename, string path)
         {
 
 
@@ -37,10 +37,10 @@ namespace DaisyMedia68.Business
 
 
             // Retrieve reference to a blob named "myblob".
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference("blobby1");
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
 
             // Create or overwrite the "myblob" blob with contents from a local file.
-            using (var fileStream = System.IO.File.OpenRead(filename))
+            using (var fileStream = System.IO.File.OpenRead(path))
             {
                 blockBlob.UploadFromStream(fileStream);
             }

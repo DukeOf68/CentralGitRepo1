@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -95,22 +95,15 @@ namespace DaisyMvc.Controllers
         {
             MergeTempFolderChunks(fileName, complete);
 
+            // If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
+            AzureBlobStorageHandler absh = WriteStreamToBlobInBytes( fileName);
 
-            AzureBlobHandler2 az2 = new AzureBlobHandler2();
-            string path = Server.MapPath(uploadedFilesPath + "/" + fileName);
-            az2.UploadFileToBlobStorage(fileName,path);
+            TempData = absh.DebugInfo;
 
+            string msg = ">>> ";
+            msg = msg + TempData["1"].ToString() + " : " + TempData["2"].ToString();
 
-
-            //// If writing the file to blob storage we can do this in chunks too, using StreamWriteSizeInBytes
-            //AzureBlobStorageHandler absh = WriteStreamToBlobInBytes( fileName);
-
-            //TempData = absh.DebugInfo;
-
-            //string msg = ">>> ";
-            //msg = msg + TempData["1"].ToString() + " : " + TempData["2"].ToString();
-
-            return Content("done");
+            return Content(msg);
         }
 
         private AzureBlobStorageHandler WriteStreamToBlobInBytes( string fileName)

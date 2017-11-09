@@ -54,7 +54,6 @@ namespace FunctionApp1
                             //valid line?
                             if (fields[0] == "2")
                             {
-
                                 // bolt on the Coda Code
                                 CodaCodes.TryGetValue(fields[1], out codacode);
                                 if (codacode != null)
